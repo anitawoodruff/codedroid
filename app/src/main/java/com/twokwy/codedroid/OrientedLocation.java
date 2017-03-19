@@ -20,49 +20,12 @@ import android.support.annotation.NonNull;
 class OrientedLocation {
 
     private final Compass mDirection;
-    private final int mX;
-    private final int mY;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        OrientedLocation that = (OrientedLocation) o;
-
-        if (mX != that.mX) return false;
-        if (mY != that.mY) return false;
-        return mDirection == that.mDirection;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = mDirection.hashCode();
-        result = 31 * result + mX;
-        result = 31 * result + mY;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "OrientedLocation{" +
-                "mDirection=" + mDirection +
-                ", mX=" + mX +
-                ", mY=" + mY +
-                '}';
-    }
+    private final Location mLocation;
 
     OrientedLocation(Compass direction, int x, int y) {
-        if (x < 0 || y < 0 || x > 9 || y > 2) {
-            throw new IllegalArgumentException(
-                    String.format("x and/or y out of bounds at (%d, %d)", x, y));
-        }
+        mLocation = new Location(x, y);
         switch (y) {
             case 0:
-                if (x % 2 == 0) {
-                    throw new IllegalStateException(
-                            String.format("x should be odd but was %d in row %d", x, y));
-                }
                 if (direction == Compass.SOUTH) {
                     throw new IllegalStateException(
                             String.format("Cannot have travelled %s to (%d, %d)", direction, x, y));
@@ -79,10 +42,6 @@ class OrientedLocation {
                 }
                 break;
             case 2:
-                if (x % 2 == 1) {
-                    throw new IllegalStateException(
-                            String.format("x should be even but was %d in row %d", x, y));
-                }
                 if (direction == Compass.NORTH) {
                     throw new IllegalStateException(
                             String.format("Cannot have travelled %s to (%d, %d)", direction, x, y));
@@ -90,37 +49,64 @@ class OrientedLocation {
                 break;
         }
         mDirection = direction;
-        mX = x;
-        mY = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrientedLocation that = (OrientedLocation) o;
+
+        if (mLocation.x != that.mLocation.x) return false;
+        if (mLocation.y != that.mLocation.y) return false;
+        return mDirection == that.mDirection;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mDirection.hashCode();
+        result = 31 * result + mLocation.x;
+        result = 31 * result + mLocation.y;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "OrientedLocation{" +
+                "mDirection=" + mDirection +
+                ", mLocation.x=" + mLocation.x +
+                ", mLocation.y=" + mLocation.y +
+                '}';
     }
 
     OrientedLocation left() {
-        int newX = mDirection.xLeft(mX, mY);
-        int newY = mDirection.yLeft(mX, mY);
+        int newX = mDirection.xLeft(mLocation.x, mLocation.y);
+        int newY = mDirection.yLeft(mLocation.x, mLocation.y);
         return new OrientedLocation(getNewDirection(newX, newY), newX, newY);
     }
 
     OrientedLocation right() {
-        int newX = mDirection.xRight(mX, mY);
-        int newY = mDirection.yRight(mX, mY);
+        int newX = mDirection.xRight(mLocation.x, mLocation.y);
+        int newY = mDirection.yRight(mLocation.x, mLocation.y);
         return new OrientedLocation(getNewDirection(newX, newY), newX, newY);
     }
 
     @NonNull
     private Compass getNewDirection(int newX, int newY) {
         Compass newDirection;
-        if (newX != mX) {
-            newDirection = Compass.safeWrapX(mX + Compass.xIncrement(mY)) == newX ? Compass.EAST : Compass.WEST;
+        if (newX != mLocation.x) {
+            newDirection = Compass.safeWrapX(mLocation.x + Compass.xIncrement(mLocation.y)) == newX ? Compass.EAST : Compass.WEST;
         } else {
-            assert(newY != mY);
-            newDirection = newY > mY ? Compass.SOUTH : Compass.NORTH;
+            assert(newY != mLocation.y);
+            newDirection = newY > mLocation.y ? Compass.SOUTH : Compass.NORTH;
         }
         return newDirection;
     }
 
     OrientedLocation backwards() {
         return new OrientedLocation(mDirection.getOpposite(),
-                mDirection.xBackwards(mX, mY), mDirection.yBackwards(mY));
+                mDirection.xBackwards(mLocation.x, mLocation.y), mDirection.yBackwards(mLocation.y));
     }
 
     Compass getOrientation() {
@@ -128,6 +114,6 @@ class OrientedLocation {
     }
 
     Location getLocation() {
-        return new Location(mX, mY);
+        return new Location(mLocation.x, mLocation.y);
     }
 }

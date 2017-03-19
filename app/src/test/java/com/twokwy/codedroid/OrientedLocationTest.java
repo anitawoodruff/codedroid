@@ -31,18 +31,19 @@ public class OrientedLocationTest {
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 3; y++) {
                 for (Compass direction : Compass.values()) {
+                    OrientedLocation orientedLocation;
                     try {
-                        OrientedLocation orientedLocation = new OrientedLocation(direction, x, y);
-                        OrientedLocation newLocation = orientedLocation.left().left().left().left().left();
-                        assertThat(newLocation, is(equalTo(orientedLocation)));
-                        n++;
+                        orientedLocation = new OrientedLocation(direction, x, y);
                     } catch (IllegalStateException e) {
-                        break;
+                        continue;
                     }
+                    OrientedLocation newLocation = orientedLocation.left().left().left().left().left();
+                    assertThat(newLocation, is(equalTo(orientedLocation)));
+                    n++;
                 }
             }
         }
-        assertThat(n, is(20 * 3));
+        assertThat(n, is(20 * 3)); // twenty rooms with three valid directions
     }
 
     @Test
@@ -55,7 +56,7 @@ public class OrientedLocationTest {
                         OrientedLocation newLocation = orientedLocation.right().right().right().right().right();
                         assertThat(newLocation, is(equalTo(orientedLocation)));
                     } catch (IllegalStateException e) {
-                        break;
+                        continue;
                     }
                 }
             }
@@ -74,7 +75,7 @@ public class OrientedLocationTest {
                         assertThat(orientedLocation.right().backwards().getLocation(),
                                 is(equalTo(orientedLocation.getLocation())));
                     } catch (IllegalStateException e) {
-                        break;
+                        continue;
                     }
                 }
             }

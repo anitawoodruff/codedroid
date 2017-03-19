@@ -67,7 +67,7 @@ enum Compass {
             case EAST:
                 switch (y) {
                     case 0: // top row
-                        return x + 2;
+                        return safeWrapX(x + 2);
                     case 1: // middle row
                         return x % 2 == 0 ? safeWrapX(x + 1) : x;
                     case 2: // bottom row
