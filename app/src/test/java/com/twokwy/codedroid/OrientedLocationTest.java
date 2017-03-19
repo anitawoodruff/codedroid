@@ -20,6 +20,12 @@ public class OrientedLocationTest {
     }
 
     @Test
+    public void orientedEastInTopRow_rightShouldIncreaseYAndFaceSouth() throws Exception {
+        OrientedLocation orientedLocation = new OrientedLocation(Compass.EAST, 1, 0);
+        assertThat(orientedLocation.right(), is(equalTo(new OrientedLocation(Compass.SOUTH, 1, 1))));
+    }
+
+    @Test
     public void orientedNorthInMiddleRowOdd_leftShouldWrapXAndFaceWest() throws Exception {
         OrientedLocation orientedLocation = new OrientedLocation(Compass.NORTH, 0, 1);
         assertThat(orientedLocation.left(), is(equalTo(new OrientedLocation(Compass.WEST, 9, 1))));
