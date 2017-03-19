@@ -60,11 +60,11 @@ class PlayerLocation {
     }
 
     PlayerLocation left() {
-        return getNeighbour(mLocation.getDirectionClockwiseFrom(mBackwardsDirection));
+        return getNeighbour(mBackwardsDirection.getDirectionClockwise(mLocation.pointsUp()));
     }
 
     PlayerLocation right() {
-        return getNeighbour(mLocation.getDirectionAnticlockwiseFrom(mBackwardsDirection));
+        return getNeighbour(mBackwardsDirection.getDirectionAnticlockwise(mLocation.pointsUp()));
     }
 
     PlayerLocation backwards() {

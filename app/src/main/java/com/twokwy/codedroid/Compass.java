@@ -12,18 +12,25 @@ package com.twokwy.codedroid;
 enum Compass {
     NORTH, EAST, SOUTH, WEST;  // this order is important!
 
+    Compass getDirectionClockwise(boolean pointsUp) {
+        return turn(1, pointsUp);
+    }
+
+    Compass getDirectionAnticlockwise(boolean pointsUp) {
+        return turn(-1, pointsUp);
+    }
     /**
-     * @param turn turn direction ie. right or left.
+     * @param offset +1 to turn once clockwise, -1 for one turn anticlockwise.
      * @param pointsUp true if the location has a link northwards, false if it has one southwards.
      * @return new compass direction.
      */
-    Compass turn(Turn turn, boolean pointsUp) {
+    Compass turn(int offset, boolean pointsUp) {
         Compass directionToSkip = pointsUp ? Compass.SOUTH : Compass.NORTH;
         if (directionToSkip == this) {
             throw new AssertionError(
                     String.format("Cannot skip direction %s if from %s", directionToSkip, this));
         }
-        return getDirectionClockwiseWhileSkipping(turn == Turn.LEFT ? 1 : -1, directionToSkip);
+        return getDirectionClockwiseWhileSkipping(offset, directionToSkip);
     }
 
     private Compass getDirectionClockwiseWhileSkipping(int offset, Compass directionToSkip) {

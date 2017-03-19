@@ -1,7 +1,7 @@
 package com.twokwy.codedroid;
 
 /**
- * Simple wrapper for x,y co-ordinates.
+ * Represents a location and can retrieve locations to left/right given a previous direction.
  *
  * Created by anita on 19/03/17.
  */
@@ -9,6 +9,52 @@ package com.twokwy.codedroid;
 class Location {
     final int x;
     final int y;
+
+    Location(int x, int y) {
+        if (x < 0 || y < 0 || x > 9 || y > 2) {
+            throw new IllegalArgumentException(
+                    String.format("x and/or y out of bounds at (%d, %d)", x, y));
+        }
+        switch (y) {
+            case 0:
+                if (x % 2 == 0) {
+                    throw new IllegalStateException(
+                            String.format("x should be odd but was %d in row %d", x, y));
+                }
+                break;
+            case 2:
+                if (x % 2 == 1) {
+                    throw new IllegalStateException(
+                            String.format("x should be even but was %d in row %d", x, y));
+                }
+                break;
+        }
+        this.x = x;
+        this.y = y;
+    }
+
+    Location getLocationInDirection(Compass direction) {
+        switch (direction) {
+            case NORTH:
+                return new Location(x, y - 1);
+            case EAST:
+                return new Location(safeWrapX(x + xIncrement(y)), y);
+            case SOUTH:
+                return new Location(x, y + 1);
+            case WEST:
+                return new Location(safeWrapX(x - xIncrement(y)), y);
+            default:
+                throw new RuntimeException("Unknown direction: " + direction);
+        }
+    }
+
+    boolean pointsUp() {
+        return y == 2 || y == 1 && x % 2 == 1; // bottom row or odd-indexed middle row
+    }
+
+    boolean pointsDown() {
+        return !pointsUp();
+    }
 
     private static int safeWrapX(int x) {
         return ((x % 10) + 10) % 10;
@@ -46,65 +92,11 @@ class Location {
         return result;
     }
 
-    Location(int x, int y) {
-        if (x < 0 || y < 0 || x > 9 || y > 2) {
-            throw new IllegalArgumentException(
-                    String.format("x and/or y out of bounds at (%d, %d)", x, y));
-        }
-        switch (y) {
-            case 0:
-                if (x % 2 == 0) {
-                    throw new IllegalStateException(
-                            String.format("x should be odd but was %d in row %d", x, y));
-                }
-                break;
-            case 2:
-                if (x % 2 == 1) {
-                    throw new IllegalStateException(
-                            String.format("x should be even but was %d in row %d", x, y));
-                }
-                break;
-        }
-        this.x = x;
-        this.y = y;
-    }
-
-    boolean pointsUp() {
-        return y == 2 || y == 1 && x % 2 == 1; // bottom row or odd-indexed middle row
-    }
-
     @Override
     public String toString() {
         return "Location{" +
                 "x=" + x +
                 ", y=" + y +
                 '}';
-    }
-
-    Compass getDirectionClockwiseFrom(Compass previousDirection) {
-        return previousDirection.turn(Turn.LEFT, pointsUp());
-    }
-
-    Compass getDirectionAnticlockwiseFrom(Compass previousDirection) {
-        return previousDirection.turn(Turn.RIGHT, pointsUp());
-    }
-
-    Location getLocationInDirection(Compass direction) {
-        switch (direction) {
-            case NORTH:
-                return new Location(x, y - 1);
-            case EAST:
-                return new Location(safeWrapX(x + xIncrement(y)), y);
-            case SOUTH:
-                return new Location(x, y + 1);
-            case WEST:
-                return new Location(safeWrapX(x - xIncrement(y)), y);
-            default:
-                throw new RuntimeException("Unknown direction: " + direction);
-        }
-    }
-
-    boolean pointsDown() {
-        return !pointsUp();
     }
 }
