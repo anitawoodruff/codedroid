@@ -27,6 +27,7 @@ public class OrientedLocationTest {
 
     @Test
     public void turningLeftFiveTimesShouldBeANoop() throws Exception {
+        int n = 0;
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 3; y++) {
                 for (Compass direction : Compass.values()) {
@@ -34,12 +35,14 @@ public class OrientedLocationTest {
                         OrientedLocation orientedLocation = new OrientedLocation(direction, x, y);
                         OrientedLocation newLocation = orientedLocation.left().left().left().left().left();
                         assertThat(newLocation, is(equalTo(orientedLocation)));
+                        n++;
                     } catch (IllegalStateException e) {
                         break;
                     }
                 }
             }
         }
+        assertThat(n, is(20 * 3));
     }
 
     @Test
