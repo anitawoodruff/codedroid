@@ -97,15 +97,13 @@ class OrientedLocation {
     OrientedLocation left() {
         int newX = mDirection.xLeft(mX, mY);
         int newY = mDirection.yLeft(mX, mY);
-        Compass newDirection = getNewDirection(newX, newY);
-        return new OrientedLocation(newDirection, newX, newY);
+        return new OrientedLocation(getNewDirection(newX, newY), newX, newY);
     }
 
     OrientedLocation right() {
         int newX = mDirection.xRight(mX, mY);
         int newY = mDirection.yRight(mX, mY);
-        Compass newDirection = getNewDirection(newX, newY);
-        return new OrientedLocation(newDirection, newX, newY);
+        return new OrientedLocation(getNewDirection(newX, newY), newX, newY);
     }
 
     @NonNull
@@ -129,11 +127,7 @@ class OrientedLocation {
         return mDirection;
     }
 
-    int getX() {
-        return mX;
-    }
-
-    int getY() {
-        return mY;
+    Location getLocation() {
+        return new Location(mX, mY);
     }
 }

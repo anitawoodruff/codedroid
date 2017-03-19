@@ -15,10 +15,8 @@ public class OrientedLocationTest {
     @Test
     public void orientedEastInMiddleRowEven_leftShouldIncreaseXAndFaceEast() throws Exception {
         OrientedLocation orientedLocation = new OrientedLocation(Compass.EAST, 6, 1);
-        OrientedLocation newLocation = orientedLocation.left();
-        assertThat(newLocation.getOrientation(), is(Compass.EAST));
-        assertThat(newLocation.getX(), is(7));
-        assertThat(newLocation.getY(), is(1));
+        assertThat(orientedLocation.left().getOrientation(), is(Compass.EAST));
+        assertThat(orientedLocation.left().getLocation(), is(new Location(7, 1)));
     }
 
     @Test
@@ -68,10 +66,10 @@ public class OrientedLocationTest {
                 for (Compass direction : Compass.values()) {
                     try {
                         OrientedLocation orientedLocation = new OrientedLocation(direction, x, y);
-                        assertThat(orientedLocation.left().backwards().getX(), is(equalTo(orientedLocation.getX())));
-                        assertThat(orientedLocation.left().backwards().getY(), is(equalTo(orientedLocation.getY())));
-                        assertThat(orientedLocation.right().backwards().getX(), is(equalTo(orientedLocation.getX())));
-                        assertThat(orientedLocation.right().backwards().getY(), is(equalTo(orientedLocation.getY())));
+                        assertThat(orientedLocation.left().backwards().getLocation(),
+                                is(equalTo(orientedLocation.getLocation())));
+                        assertThat(orientedLocation.right().backwards().getLocation(),
+                                is(equalTo(orientedLocation.getLocation())));
                     } catch (IllegalStateException e) {
                         break;
                     }
