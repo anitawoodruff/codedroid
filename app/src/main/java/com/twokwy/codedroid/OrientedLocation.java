@@ -81,27 +81,15 @@ class OrientedLocation {
     }
 
     OrientedLocation left() {
-        int newX = mDirection.xLeft(mLocation.x, mLocation.y);
-        int newY = mDirection.yLeft(mLocation.x, mLocation.y);
-        return new OrientedLocation(getNewDirection(newX, newY), newX, newY);
+        Compass newDirection = mLocation.getDirectionLeftFrom(mDirection);
+        Location newLocation = mLocation.getLocationInDirection(newDirection);
+        return new OrientedLocation(newDirection, newLocation.x, newLocation.y);
     }
 
     OrientedLocation right() {
-        int newX = mDirection.xRight(mLocation.x, mLocation.y);
-        int newY = mDirection.yRight(mLocation.x, mLocation.y);
-        return new OrientedLocation(getNewDirection(newX, newY), newX, newY);
-    }
-
-    @NonNull
-    private Compass getNewDirection(int newX, int newY) {
-        Compass newDirection;
-        if (newX != mLocation.x) {
-            newDirection = Compass.safeWrapX(mLocation.x + Compass.xIncrement(mLocation.y)) == newX ? Compass.EAST : Compass.WEST;
-        } else {
-            assert(newY != mLocation.y);
-            newDirection = newY > mLocation.y ? Compass.SOUTH : Compass.NORTH;
-        }
-        return newDirection;
+        Compass newDirection = mLocation.getDirectionRightFrom(mDirection);
+        Location newLocation = mLocation.getLocationInDirection(newDirection);
+        return new OrientedLocation(newDirection, newLocation.x, newLocation.y);
     }
 
     OrientedLocation backwards() {
