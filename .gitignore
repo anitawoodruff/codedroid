@@ -10,6 +10,9 @@
 /captures
 .externalNativeBuild
 
+# added by me because they kept changing
+.idea/misc.xml
+
 # The rest is from github.com android .gitignore template:
 
 # Built application files
