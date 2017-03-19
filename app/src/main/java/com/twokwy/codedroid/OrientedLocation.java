@@ -93,8 +93,9 @@ class OrientedLocation {
     }
 
     OrientedLocation backwards() {
-        return new OrientedLocation(mDirection.getOpposite(),
-                mDirection.xBackwards(mLocation.x, mLocation.y), mDirection.yBackwards(mLocation.y));
+        Compass newDirection = mDirection.getOpposite();
+        Location newLocation = mLocation.getLocationInDirection(newDirection);
+        return new OrientedLocation(newDirection, newLocation.x, newLocation.y);
     }
 
     Compass getOrientation() {

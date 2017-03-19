@@ -27,39 +27,6 @@ enum Compass {
         }
     }
 
-    int xBackwards(int x, int y) {
-        switch (this) {
-            case NORTH:
-                return x;
-            case EAST:
-                return safeWrapX(x - xIncrement(y));
-            case SOUTH:
-                return x;
-            case WEST:
-                return safeWrapX(x + xIncrement(y));
-            default:
-                throw new RuntimeException("Unknown compass direction: " + this);
-        }
-    }
-
-    int yBackwards(int y) {
-        switch (this) {
-            case NORTH:
-                if (y >= 2) {
-                    throw new AssertionError("y should be 0 or 1 if facing north but was: " + y);
-                }
-                return y + 1;
-            case EAST:
-                return y;
-            case SOUTH:
-                return y - 1;
-            case WEST:
-                return y;
-            default:
-                throw new RuntimeException("Unknown compass direction: " + this);
-        }
-    }
-
     static int xIncrement(int y) {
         switch (y) {
             case 0: // first row
