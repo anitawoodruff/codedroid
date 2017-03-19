@@ -10,37 +10,38 @@ package com.twokwy.codedroid;
  */
 
 enum Compass {
-    NORTH, SOUTH, EAST, WEST;
+    NORTH, EAST, SOUTH, WEST;  // this order is important!
+
+    /**
+     * @param turn turn direction ie. right or left.
+     * @param pointsUp true if the location has a link northwards, false if it has one southwards.
+     * @return new compass direction.
+     */
+    Compass turn(Turn turn, boolean pointsUp) {
+        Compass directionToSkip = pointsUp ? Compass.SOUTH : Compass.NORTH;
+        if (directionToSkip == this) {
+            throw new AssertionError(
+                    String.format("Cannot skip direction %s if from %s", directionToSkip, this));
+        }
+        return getDirectionClockwiseWhileSkipping(turn == Turn.LEFT ? 1 : -1, directionToSkip);
+    }
+
+    private Compass getDirectionClockwiseWhileSkipping(int offset, Compass directionToSkip) {
+        Compass newDirection = getDirectionClockwise(offset);
+        return newDirection == directionToSkip ? newDirection.getDirectionClockwise(offset) : newDirection;
+    }
+
+    Compass getDirectionClockwise(int offset) {
+        return Compass.values()[safeWrapCompassIndex(this.ordinal() + offset)];
+    }
 
     Compass getOpposite() {
-        switch (this) {
-            case NORTH:
-                return SOUTH;
-            case EAST:
-                return WEST;
-            case SOUTH:
-                return NORTH;
-            case WEST:
-                return EAST;
-            default:
-                return null; // shouldn't happen.
-        }
+        return Compass.values()[safeWrapCompassIndex(this.ordinal() + 2)];
     }
 
-    static int xIncrement(int y) {
-        switch (y) {
-            case 0: // first row
-                return 2;
-            case 1: // middle row
-                return 1;
-            case 2: // bottom row
-                return 2;
-            default:
-                throw new RuntimeException("y should be between 0-2 but was: " + y);
-        }
+    private static int safeWrapCompassIndex(int i) {
+        return ((i % 4) + 4) % 4;
+
     }
 
-    static int safeWrapX(int x) {
-        return ((x % 10) + 10) % 10;
-    }
 }

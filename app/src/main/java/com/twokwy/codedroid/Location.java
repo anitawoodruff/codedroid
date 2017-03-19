@@ -10,6 +10,23 @@ class Location {
     final int x;
     final int y;
 
+    private static int safeWrapX(int x) {
+        return ((x % 10) + 10) % 10;
+    }
+
+    private static int xIncrement(int y) {
+        switch (y) {
+            case 0: // first row
+                return 2;
+            case 1: // middle row
+                return 1;
+            case 2: // bottom row
+                return 2;
+            default:
+                throw new RuntimeException("y should be between 0-2 but was: " + y);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,39 +81,12 @@ class Location {
                 '}';
     }
 
-    Compass getDirectionLeftFrom(Compass direction) {
-        if (pointsUp()) {
-            switch (direction) {
-                case NORTH:
-                    throw new AssertionError(
-                            String.format("Cannot be oriented %s at (%d, %d) since pointing up",
-                                    direction, x, y));
-                case EAST:
-                    return Compass.NORTH;
-                case SOUTH:
-                    return Compass.EAST;
-                case WEST:
-                    return Compass.WEST;
-                default:
-                    throw new RuntimeException("Unknown direction: " + direction);
-            }
-        } else {
-            switch (direction) {
-                case NORTH:
-                    return Compass.WEST;
-                case EAST:
-                    return Compass.EAST;
-                case SOUTH:
-                    throw new AssertionError(
-                            String.format("Cannot be oriented %s at (%d, %d) since pointing down",
-                                    direction, x, y));
-                case WEST:
-                    return Compass.SOUTH;
-                default:
-                    throw new RuntimeException("Unknown direction: " + direction);
-            }
+    Compass getDirectionClockwiseFrom(Compass previousDirection) {
+        return previousDirection.turn(Turn.LEFT, pointsUp());
+    }
 
-        }
+    Compass getDirectionAnticlockwiseFrom(Compass previousDirection) {
+        return previousDirection.turn(Turn.RIGHT, pointsUp());
     }
 
     Location getLocationInDirection(Compass direction) {
@@ -104,48 +94,17 @@ class Location {
             case NORTH:
                 return new Location(x, y - 1);
             case EAST:
-                return new Location(Compass.safeWrapX(x + Compass.xIncrement(y)), y);
+                return new Location(safeWrapX(x + xIncrement(y)), y);
             case SOUTH:
                 return new Location(x, y + 1);
             case WEST:
-                return new Location(Compass.safeWrapX(x - Compass.xIncrement(y)), y);
+                return new Location(safeWrapX(x - xIncrement(y)), y);
             default:
                 throw new RuntimeException("Unknown direction: " + direction);
         }
     }
 
-    Compass getDirectionRightFrom(Compass direction) {
-        if (pointsUp()) {
-            switch (direction) {
-                case NORTH:
-                    throw new AssertionError(
-                            String.format("Cannot be oriented %s at (%d, %d) since pointing up",
-                                    direction, x, y));
-                case EAST:
-                    return Compass.EAST;
-                case SOUTH:
-                    return Compass.WEST;
-                case WEST:
-                    return Compass.NORTH;
-                default:
-                    throw new RuntimeException("Unknown direction: " + direction);
-            }
-        } else {
-            switch (direction) {
-                case NORTH:
-                    return Compass.EAST;
-                case EAST:
-                    return Compass.SOUTH;
-                case SOUTH:
-                    throw new AssertionError(
-                            String.format("Cannot be oriented %s at (%d, %d) since pointing down",
-                                    direction, x, y));
-                case WEST:
-                    return Compass.WEST;
-                default:
-                    throw new RuntimeException("Unknown direction: " + direction);
-            }
-
-        }
+    boolean pointsDown() {
+        return !pointsUp();
     }
 }
