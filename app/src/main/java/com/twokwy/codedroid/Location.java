@@ -1,5 +1,8 @@
 package com.twokwy.codedroid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a location and can retrieve locations to left/right given a previous direction.
  *
@@ -11,26 +14,31 @@ class Location {
     final int y;
 
     Location(int x, int y) {
-        if (x < 0 || y < 0 || x > 9 || y > 2) {
+        if (!isValidLocation(x, y)) {
             throw new IllegalArgumentException(
-                    String.format("x and/or y out of bounds at (%d, %d)", x, y));
+                    String.format("Not a valid room location at (%d, %d)", x, y));
+        }
+        this.x = x;
+        this.y = y;
+    }
+
+    static boolean isValidLocation(int x, int y) {
+        if (x < 0 || y < 0 || x > 9 || y > 2) {
+            return false;
         }
         switch (y) {
             case 0:
                 if (x % 2 == 0) {
-                    throw new IllegalStateException(
-                            String.format("x should be odd but was %d in row %d", x, y));
+                    return false;
                 }
                 break;
             case 2:
                 if (x % 2 == 1) {
-                    throw new IllegalStateException(
-                            String.format("x should be even but was %d in row %d", x, y));
+                    return false;
                 }
                 break;
         }
-        this.x = x;
-        this.y = y;
+        return true;
     }
 
     Location getLocationInDirection(Compass direction) {
@@ -98,5 +106,17 @@ class Location {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    static List<Location> getValidLocations() {
+        List<Location> validLocations = new ArrayList<>();
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 3; y++) {
+                if (isValidLocation(x, y)) {
+                    validLocations.add(new Location(x, y));
+                }
+            }
+        }
+        return validLocations;
     }
 }

@@ -48,6 +48,9 @@ public class PlayerLocationTest {
         int n = 0;
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 3; y++) {
+                if (!Location.isValidLocation(x, y)) {
+                    continue;
+                }
                 for (Compass direction : Compass.values()) {
                     PlayerLocation playerLocation;
                     try {
@@ -68,6 +71,9 @@ public class PlayerLocationTest {
     public void turningRightFiveTimesShouldBeANoop() throws Exception {
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 3; y++) {
+                if (!Location.isValidLocation(x, y)) {
+                    continue;
+                }
                 for (Compass direction : Compass.values()) {
                     try {
                         PlayerLocation playerLocation = new PlayerLocation(direction, x, y);
@@ -83,6 +89,9 @@ public class PlayerLocationTest {
     public void goingLeftOrRightThenBackwardsShouldStayStill() throws Exception {
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 3; y++) {
+                if (!Location.isValidLocation(x, y)) {
+                    continue;
+                }
                 for (Compass direction : Compass.values()) {
                     try {
                         PlayerLocation playerLocation = new PlayerLocation(direction, x, y);
