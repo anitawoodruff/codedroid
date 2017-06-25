@@ -51,12 +51,6 @@ class Labyrinth {
     }
 
     List<Room> getRooms() {
-        List<Room> nonEmptyRooms = new ArrayList<>(20);
-        for (Room r : mRooms.values()) {
-            if (r != null) {
-                nonEmptyRooms.add(r);
-            }
-        }
-        return nonEmptyRooms;
+        return new ArrayList<>(mRooms.values());
     }
 }

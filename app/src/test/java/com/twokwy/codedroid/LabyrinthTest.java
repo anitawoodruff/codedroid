@@ -4,10 +4,14 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.AnyOf.anyOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -25,7 +29,9 @@ public class LabyrinthTest {
     public void oneRoomContainsTheWumpus() throws Exception {
         Labyrinth labyrinth = new Labyrinth();
         List<Room> rooms = labyrinth.getRooms();
-        assertThat(rooms.indexOf(Room.WUMPUS), both(not(-1)).and(is(rooms.lastIndexOf(Room.WUMPUS))));
+        assertThat(rooms, hasItem(Room.WUMPUS));
+        rooms.remove(Room.WUMPUS);
+        assertThat(rooms, not(hasItem(Room.WUMPUS)));
     }
 
     @Test
